@@ -13,6 +13,10 @@
 
 
 
+
+
+INSTALL COMPOSER FIRST BEFORE RUNNING THIS COMMAND
+
     2. after being in the aEBackendFromScratch folder or directory, open command prompt in the same directory, run this command in the command prompt "composer require google/apiclient" once all installed, and it'll take some time to do install this 
 
         AND if you face a **process-timeout#** issue, mostly gets stuck at 94%
