@@ -1,0 +1,31 @@
+"
+<br />
+\n
+<b>
+	Warning
+</b>
+:  Undefined array key \"access_token\" in
+<b>
+	C:\\Users\\abhis\\Downloads\\php login page\\Musab dev Pure Coding\\aEBackendFromScratchMusabLocation\\auth\\googleOauth\\welcome.php
+</b>
+on line
+<b>
+	9
+</b>
+<br />
+\n
+<br />
+\n
+<b>
+	Fatal error
+</b>
+:  Uncaught InvalidArgumentException: invalid json token in C:\\Users\\abhis\\Downloads\\php login page\\Musab dev Pure Coding\\aEBackendFromScratchMusabLocation\\vendor\\google\\apiclient\\src\\Client.php:523\nStack trace:\n#0 C:\\Users\\abhis\\Downloads\\php login page\\Musab dev Pure Coding\\aEBackendFromScratchMusabLocation\\auth\\googleOauth\\welcome.php(9): Google\\Client-&gt;setAccessToken(NULL)\n#1 {main}\n  thrown in
+<b>
+	C:\\Users\\abhis\\Downloads\\php login page\\Musab dev Pure Coding\\aEBackendFromScratchMusabLocation\\vendor\\google\\apiclient\\src\\Client.php
+</b>
+on line
+<b>
+	523
+</b>
+<br />
+\n"2

@@ -1,0 +1,4 @@
+Only one thing needed to ready the front end, run the following command in command promt in current directory(folder name 'aereact')
+
+npm i
+

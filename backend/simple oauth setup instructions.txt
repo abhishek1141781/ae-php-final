@@ -1,0 +1,38 @@
+
+
+
+
+
+open command prompt in current directory:
+https://youtu.be/bgSSJQolR0E?t=47
+
+### GCP acount for ClientId and ClientSecret
+
+    Create account on console.cloud.google.com
+    https://www.youtube.com/watch?v=SP_d8VgqrPo
+                        OR
+    https://www.youtube.com/watch?v=KcHx5dXaDtk
+
+    create project on console.cloud.google.com to generate keys
+    https://youtu.be/i5IybpgcInY?t=129
+
+    Copy the keys needed on this site"https://console.cloud.google.com/apis/credentials?organizationId=0&project=fifth-tangent-406711"
+
+    TUTORIAL:    https://youtu.be/i5IybpgcInY?t=420
+
+    Use your own personal below keys
+
+        **pasteClientId**
+        **pasteClientSecret**
+
+        $client->setClientId('pasteClientId');
+        $client->setClientSecret('pasteClientSecret');
+
+#        $client->setClientId('your_google_client_id');
+#        $client->setClientSecret('your_google_client_secret');
+
+#    PASTE THEM IN THE BELOW FILE
+#    composer - Shortcut
+
+    For REDIRECT URI USE THE SAME AS THE ONE USED IN THE CODE IN THE BELOW FILE
+    http://localhost:3000/login

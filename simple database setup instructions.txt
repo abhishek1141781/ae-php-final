@@ -1,0 +1,5 @@
+### Setup Database
+
+    open the command prompt in the current working directory which is also where the file named aedb2.sql is, and run command "source aedb2.sql"
+
+    in case if some errors are encountered, open the aedb2 file and copy all contents and paste in the command prompt after logging in to your mysql on cmd, and that should do it

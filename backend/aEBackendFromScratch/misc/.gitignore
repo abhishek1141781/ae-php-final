@@ -1,0 +1,2 @@
+# ignore ALL files and folders in folder named vendor
+/vendor

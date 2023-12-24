@@ -1,0 +1,83 @@
+categoryService.php
+<?php
+
+// aquire database connection and select database
+include('../config/db_config_connection.php');
+
+
+// Function to fetch distinct categories
+function fetchDistinctCategories($con)
+{
+    $sql = "SELECT DISTINCT category, event_id FROM events";
+    // $stmt = $con->prepare($sql);
+    $stmt = mysqli_prepare($con, $sql);
+    // $stmt = $con->prepare($sql);
+    
+
+    $categories = [];
+    
+    if ($stmt) {
+        // $stmt->execute();
+        mysqli_stmt_execute($stmt);
+        // $result = $stmt->get_result();
+        $result = mysqli_stmt_get_result($stmt);
+        
+
+        while ($row = $result->fetch_assoc()) {
+
+
+            
+            // $event_id = (string)$row['event_id'];
+            $event_id = $row['event_id'];
+            $category = $row['category'];
+            $categories[$event_id] = $category;
+
+            // $categoryRresponseJSON = array(
+            //     `$event_id` => 'valid',
+            //     'user_data' => 
+            // );
+
+            
+        }
+
+        $stmt->close();
+        return $categories;
+    }else{
+        echo "No categories found";
+    }
+
+}
+
+?>
+
+getCategories.php
+<?php
+
+include('../config/db_config_connection.php');
+include('../config/cors.php');
+include('../utils/categoryService.php');
+
+// Check if the request method is OPTIONS and respond with 200 OK
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS' || $_SERVER['REQUEST_METHOD'] === 'GET') {
+    http_response_code(200);
+} else {
+    http_response_code(405);
+    exit;
+}
+
+// Fetch distinct categories
+$distinctCategories = fetchDistinctCategories($con);
+
+echo json_encode($distinctCategories);
+// echo json_encode($distinctCategories, JSON_NUMERIC_CHECK);
+
+// Close the database connection
+$con->close();
+
+
+?>
+
+create a similar locationService.php and getLocations.php for location according to the below schema
+
+UPDATE events
+SET location = CONCAT('loc', SUBSTRING(location, LENGTH('Location ') + 1));

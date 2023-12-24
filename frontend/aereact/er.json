@@ -1,0 +1,342 @@
+THESE ARE THE ERRORS
+*Undefined array key "access_token" in* C:\Users\abhis\Downloads\php login page\Musab dev Pure Coding\aEBackendFromScratchMusabLocation\auth\googleOauth\welcome.php on line 9
+*Uncaught InvalidArgumentException: invalid json token* in C:\Users\abhis\Downloads\php login page\Musab dev Pure Coding\aEBackendFromScratchMusabLocation\vendor\google\apiclient\src\Client.php:523
+
+[Sun Dec 24 17:46:38 2023] [::1]:54556 [200]: GET /auth/googleOauth/welcome.php?code=4/0AfJohXnHDHWy66NI3UsWQagAICIj2uAaKSfYUC-IrBSVqmjlN69kaq68OB2WPyI_DfJ3DA - Uncaught InvalidArgumentException: invalid json token in C:\Users\abhis\Downloads\php login page\Musab dev Pure Coding\aEBackendFromScratchMusabLocation\vendor\google\apiclient\src\Client.php:523
+Stack trace:
+#0 C:\Users\abhis\Downloads\php login page\Musab dev Pure Coding\aEBackendFromScratchMusabLocation\auth\googleOauth\welcome.php(9): Google\Client->setAccessToken(NULL)
+#1 {main}
+  thrown in C:\Users\abhis\Downloads\php login page\Musab dev Pure Coding\aEBackendFromScratchMusabLocation\vendor\google\apiclient\src\Client.php on line 523
+
+
+welcome.php
+php
+<?php
+require_once 'config.php';
+include('../../config/cors.php');
+
+
+// Authenticate code from Google OAuth Flow
+if (isset($_GET['code'])) {
+    $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
+    $client->setAccessToken($token['access_token']);
+
+    error_log("I was here : 9". $token);
+
+
+    // Get profile info
+    $google_oauth = new Google\Service\Oauth2($client);
+    $google_account_info = $google_oauth->userinfo->get();
+    $userinfo = [
+        'name' => $google_account_info['givenName'] . ' ' . $google_account_info['familyName'],
+        'email' => $google_account_info['email'],
+        'password' => null, // Password is not used for Google OAuth
+        'google_id' => $google_account_info['id'],
+    ];
+    $userinfoFrontend = [
+        'name' => $google_account_info['givenName'] . ' ' . $google_account_info['familyName'],
+        'email' => $google_account_info['email'],
+        'password' => null, // Password is not used for Google OAuth
+        'google_id' => $google_account_info['id'],
+        'full_name' => $google_account_info['name'],
+        'picture' => $google_account_info['picture'],
+        'verifiedEmail' => $google_account_info['verifiedEmail'],
+        'token' => $google_account_info['id'],
+    ];
+
+    // Checking if the user already exists in the database
+    $sql = "SELECT * FROM users WHERE email = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('s', $userinfo['email']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+    error_log("I was here : 29");
+
+    if ($result->num_rows > 0) {
+        // User already exists
+        $existingUser = $result->fetch_assoc();
+        error_log("I was here : User already exists 34");
+
+        // Update the user's token
+        $sql = "UPDATE users SET google_id = ? WHERE email = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('ss', $userinfo['google_id'], $userinfo['email']);
+        $stmt->execute();
+        $stmt->close();
+
+        $token = $existingUser['google_id'];
+    } else {
+        // New user
+        error_log("I was here : NEW USER 46");
+        $sql = "INSERT INTO users (name, email, password, google_id) VALUES (?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('ssss', $userinfo['name'], $userinfo['email'], $userinfo['password'], $userinfo['google_id']);
+        $stmt->execute();
+        $stmt->close();
+
+        $token = $userinfo['google_id'];
+    }
+
+    // Save user data into session
+    $_SESSION['user_token'] = $token;
+
+    // Log user data to the console
+    error_log("User data: " . json_encode($userinfoFrontend));
+
+    // Send user data as JSON response to frontend
+    header('Content-Type: application/json');
+    echo json_encode($userinfoFrontend);
+
+    // // Redirect the user to the frontend URL
+    // header("Location: http://localhost:3000/user/dashboard");
+    // die();
+} else {
+    if (!isset($_SESSION['user_token'])) {
+        // Log user data to the console
+        error_log("I was here : 74");
+
+        header("Location: index.php");
+        die();
+    }
+
+    // Checking if the user already exists in the database
+    $sql = "SELECT * FROM users WHERE google_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('s', $_SESSION['user_token']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+
+    error_log("I was here : 88");
+
+    if ($result->num_rows > 0) {
+        // User exists
+        $userinfo = $result->fetch_assoc();
+        error_log("I was here : 93");
+    }
+}
+?>
+
+
+
+
+
+
+Login.js
+
+javascript
+import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, Input, Label, Row } from "reactstrap";
+import Base from "../components/Base";
+import backgroundImage from '../img/exploring-the-depths-of-the-ocean-tzywgdcfc3c17gha.jpg'
+import { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { fetchAuthUrlFromPHPBackend, fetchUserDataFromBackend, manualLoginUser } from "../servicesArea/user_service";
+import { doLogin } from "../auth/authIndex";
+import { useNavigate } from "react-router-dom";
+// import userContext from "../context/userContext";
+
+const Login = () => {
+
+    // const userContextData = useContext(userContext)
+
+    const navigate = useNavigate()
+
+    let counter = 1;
+
+    //destructuring
+    const [loginDetail, setLoginDetail] = useState({
+        username: '',
+        password: ''
+    })
+
+    const handleChange = (event, field) => {
+
+        let actualValue = event.target.value
+        setLoginDetail({
+            ...loginDetail,
+            [field]: actualValue
+        })
+    }
+
+    const handleReset = () => {
+        setLoginDetail({
+            username: '',
+            password: ''
+        });
+    };
+
+    const handleFormSubmit = (event) => {
+        event.preventDefault();
+        // console.log(loginDetail)
+        //validation
+        if (loginDetail.username.trim() === '' || loginDetail.password.trim() === '') {
+            toast.error("Recheck credentials")
+            return;
+        }
+
+        //submit the data to the server
+        manualLoginUser(loginDetail).then((respData) => {
+            console.log("response.data from backend: ",respData)
+                //save data to localStorage
+            doLogin(respData, () => {
+                console.log("full backend server response is saved to localStorage: ",respData)
+                // console.log("login detail is saved to localStorage: ",respData)
+
+                //redirect to user dashboard
+                navigate("/user/dashboard")
+                console.log("from UserDashboard: navigating to this page: /user/profile-info/"+respData.user_id);
+                // navigate(`/user/profile-info/${respData.user_id}`)
+                toast.success("login success")
+            })
+
+            }).catch(error => {
+                console.log(error)
+                if (error.response.status === 400 || error.response.status === 404)
+                    toast.error(error.response.data.message)
+                else
+                    toast.error("Something went wrong on server !!")
+        })
+    }
+
+    const [authUrl, setAuthUrl] = useState('');
+
+    useEffect(() => {
+        // Fetch the authentication URL from the backend when the component mounts
+        fetchAuthUrlFromPHPBackend()
+            .then(data => {
+                setAuthUrl(data.authUrl);
+                // console.log("authUrl: ", authUrl.toString());
+                // console.log("data: ", data);
+            })
+            .catch(error => {
+                console.error('Error fetching authentication URL:', error);
+            });
+    }, []); // The empty dependency array ensures that this effect runs only once when the component mounts
+
+    const handleGoogleLogin = () => {
+        // Redirect the user to the fetched authentication URL
+        window.location.href = authUrl;
+    }
+
+
+
+    // save user data to localStorage useEffect
+    // When redirected back after Google OAuth, handle the response
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // // Get all query parameters and create the final code string
+        // const codeParams = Array.from(urlParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+        const code = urlParams.get('code');
+        // const code1 = urlParams.get('code');
+        // const scope2 = urlParams.get('scopte');
+        // const authuser3 = urlParams.get('authuser');
+        // const prompt4 = urlParams.get('prompt');
+
+        // const code = "code="+code1+"&scope="+scope2+"&authuser="+authuser3+"&prompt="+prompt4
+
+        console.log("redireccted to login, with code: ", code);
+        // console.log("redireccted to login, with codeParams: ", codeParams);
+        // console.log(code.charAt(5))
+
+
+        // if (code.charAt(5)!=='n') {
+        if (code) {
+            // Check if the 'data' key exists in localStorage and is not empty
+            const existingData = localStorage.getItem('data');
+            if (!existingData) {
+
+                // Send a request to your backend to handle the code and get user data
+                fetchUserDataFromBackend(code)
+                    .then(userData => {
+                        console.log(`data: ${counter++} time: `,userData)
+                        // Save user data to local storage
+                        localStorage.setItem('data', JSON.stringify(userData) + `${counter}`);
+
+                        // // Redirect to the frontend URL
+                        // window.location.href = 'http://localhost:3000/user/dashboard';
+                    })
+                    .catch(error => {
+                        console.error('Error fetching user data from backend:', error);
+                    });
+
+
+            } else {
+            console.log("'data' key in localStorage is not empty. Skipping user data save.");
+        }
+        }
+    }, []); // The empty dependency array ensures that this effect runs only once when the component mounts
+
+    const cardStyle = {
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        color: 'white',
+        // filter: 'blur(0.5px)', // Apply a blur effect to the background image
+        // opacity: '0.6', // Adjust the opacity for the glazed effect (0.8 for 80% opacity)
+    };
+
+    return (
+        <Base>
+            <div>
+                <Container>
+                    <Row>
+                        <Col sm={{ size: 6, offset: 3 }}>
+                            <Card className="custom-card mt-2" style={cardStyle}>
+                                <CardHeader style={{ background: "grey" }}>
+                                    <h3>Login Form!!!</h3>
+                                </CardHeader>
+                                <CardBody>
+                                    <Form onSubmit={handleFormSubmit}>
+                                        {/* Email Field */}
+                                        <FormGroup>
+                                            <Label for="email">
+                                                Enter Email
+                                            </Label>
+                                            <Input
+                                                type="email"
+                                                id="email"
+                                                placeholder="enter email here"
+                                                value={loginDetail.username}
+                                                onChange={(e) => handleChange(e, "username")}
+                                            />
+                                        </FormGroup>
+                                        {/* Password Field */}
+                                        <FormGroup>
+                                            <Label for="password">
+                                                Enter Password
+                                            </Label>
+                                            <Input
+                                                type="password"
+                                                placeholder="enter password here"
+                                                id="password"
+                                                value={loginDetail.password}
+                                                onChange={(e) => handleChange(e, "password")}
+                                            />
+                                        </FormGroup>
+                                        <Container className="text-center">
+                                            <Button color="dark" outline className="me-2">Login</Button>
+                                            <Button color="danger" outline onClick={handleReset}>Reset</Button>
+
+
+                                            {/* Login with Google Button */}
+                                            <Button color="success" outline onClick={handleGoogleLogin}>
+                                                Login with Google
+                                            </Button>
+
+
+                                        </Container>
+                                    </Form>
+                                </CardBody>
+                            </Card>
+                        </Col>
+                    </Row>
+                </Container>
+            </div>
+        </Base>
+    )
+}
+
+export default Login;
