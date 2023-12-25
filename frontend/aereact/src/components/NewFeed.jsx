@@ -61,11 +61,11 @@ export const NewFeed = () => {
   function deletePostUtility(post) {
     console.log("post from deletePost: ", post)
     //going to delete post
-    deletePostService(post.id).then(data => {
+    deletePostService(post.event_id).then(data => {
       console.log(data)
       toast.success("post deleted")
       
-      let newPostcontents = postContent.content.filter(p=>p.id!==post.id)
+      let newPostcontents = postContent.content.filter(p=>p.event_id!==post.event_id)
       setPostContent({...postContent,content:newPostcontents})
 
       // let newPosts = posts.filter(p => p.id != post.id)
@@ -95,7 +95,7 @@ export const NewFeed = () => {
                 }>
                     {/* Uncaught TypeError: Cannot read properties of null (reading 'totalElements') */}
                     {/* since it's taking time to load, thus make it null(null safe), and then will be updated once fully loaded*/}
-                    <h1>Blogs Count ({postContent.totalElements})</h1>
+                    <h1>Events Count ({postContent.totalElements})</h1>
 
                     <InfiniteScroll
 

@@ -5,11 +5,9 @@ require_once '../../vendor/autoload.php';
 session_start();
 
 // init configuration
-$clientID = 'you_your_own_';
-$clientSecret = 'you_your_own_';
+$clientID = '727755570536-rp85pdutn7k05uh71jeg3mejo4v08h3g.apps.googleusercontent.com';
+$clientSecret = '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';
 // $redirectUri = 'http://localhost:8000/auth/googleOauth/welcome.php';
-
-// add this in your redirect uri google console
 $redirectUri = 'http://localhost:3000/login';
 
 // create Client Request to access Google API

@@ -23,10 +23,10 @@ export const loadAllPosts = (pageNumber, pageSize) => {
 };
 
 // load single post of given id
-export const loadPost = (id) => {
+export const loadPost = (eventId) => {
   // console.log("postId from loadPost of PostService: ", id)
   return myAxios
-    .get(`/posts/${id}`)
+    .get(`/public/getSingleEvent.php?eventId=${eventId}`)
     .then((response) => response.data)
     .catch((error) => {
       console.log(error);
@@ -91,15 +91,15 @@ export const loadPostsByDate = (date) => {
 };
 
 //delete post
-export function deletePostService(postId) {
+export function deletePostService(eventId) {
   // return privateAxios
   return myAxios
-    .delete(`/posts/${postId}`)
+    .delete(`/private/deleteEvent.php?eventId=${eventId}`)
     .then((response) => response.data);
 }
 
 //update post
-export function updatePostService(post, postId) {
-  console.log("post from update post service: ", post);
-  return privateAxios.put(`/posts/${postId}`, post).then((resp) => resp.data);
+export function updatePostService(event, eventId) {
+  console.log("post from update post service: ", event);
+  return privateAxios.put(`/private/updateEvent.php?eventId=${eventId}`, event).then((resp) => resp.data);
 }

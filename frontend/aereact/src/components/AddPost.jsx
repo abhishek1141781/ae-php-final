@@ -47,21 +47,32 @@ const AddPost = () => {
         setPost({ ...post, [event.target.name]: event.target.value })
     }
 
+
+
     //create Post function
     const createPost = (event) => {
 
         event.preventDefault()
         console.log("created the post after preventing the def act after sub buttn pressed: ",post)
         if (post.event_name.trim() === '') {
-            toast.error('post is required!')
+            toast.error('Name: It must be something, right?!')
             return;
         }
         if (post.location.trim() === '') {
-            toast.error('content is required!')
+            toast.error('Location: Where is the event taking place? Hello?!!')
             return;
         }
         if (post.category.trim() === '') {
-            toast.error('category is required!')
+            toast.error('Category: Help us help you!')
+            return;
+        }
+        if (post.description.trim() === '') {
+            toast.error('Description: Tell me more about it!')
+            return;
+        }
+
+        if (post.start_time > post.end_time) {
+            toast.error('Do not mess with time, tomorrow always comes after')
             return;
         }
 

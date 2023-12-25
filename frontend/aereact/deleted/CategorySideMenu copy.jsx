@@ -3,11 +3,11 @@ import { Button, Input, ListGroup, ListGroupItem } from "reactstrap";
 import {
   loadAllCategories,
   loadAllLocations,
-} from "../servicesArea/CategoryService";
+} from "../src/servicesArea/CategoryService";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
-function CategorySideMenu({ dateFilter, categoryFilter, cityFilter }) {
+function CategorySideMenu({ dateFilter }) {
 
   const [categories, setCategories] = useState([]);
   const [locations, setLocations] = useState([]);
@@ -68,15 +68,14 @@ function CategorySideMenu({ dateFilter, categoryFilter, cityFilter }) {
       
       {/* Render the date filter if dateFilter is true */}
       {dateFilter && (
-          <div className="mb-3 mt-0 success">
+          <div className="mb-3 mt-5 secondary">
               <Input type="date" id="date" name="date" onChange={handleDateChange} />
               <Button
                   tag={Link}
-                  to={selectedDate ? `/events/date/${selectedDate}` : '#'}
+                  to={`/events/date/${selectedDate}`}
                   color="primary"
                   outline
                   className="mt-2"
-                  disabled={!selectedDate}
               >
                   Filter by Date
               </Button>
@@ -98,60 +97,55 @@ function CategorySideMenu({ dateFilter, categoryFilter, cityFilter }) {
 
 
 
-      {/* Render categories and cities filters side by side*/}
+      {/* Render categories and cities filters */}
+      <ListGroup className="mb-4">
+        <ListGroupItem tag={Link} to="/" action={true} className="border-0">
+          All Categories
+        </ListGroupItem>
 
-      {categoryFilter && (
-          <ListGroup className="mb-4">
-            <ListGroupItem tag={Link} to="/" action={true} className="border-0">
-              All Categories
-            </ListGroupItem>
-
-            {categories &&
-              categories.map((cat, index) => {
-                return (
-                  // <ListGroupItem tag={Link} to={'/categories/'+cat.id} className='border-1 shadow-1 mt-1 custom-list-group-item' action={true} key={index}>
-                  <ListGroupItem
-                    tag={Link}
-                    to={"/categories/" + cat.name.category}
-                    className="border-1 shadow-1 mt-1 custom-list-group-item"
-                    action={true}
-                    key={index}
-                  >
-                    {/* {cat.name.category} */}
-                    {`${cat.name.category} (${cat.name.event_count})`}
-                  </ListGroupItem>
-                );
-              })}
-          </ListGroup>
-      )}
-      
+        {categories &&
+          categories.map((cat, index) => {
+            return (
+              // <ListGroupItem tag={Link} to={'/categories/'+cat.id} className='border-1 shadow-1 mt-1 custom-list-group-item' action={true} key={index}>
+              <ListGroupItem
+                tag={Link}
+                to={"/categories/" + cat.name.category}
+                className="border-1 shadow-1 mt-1 custom-list-group-item"
+                action={true}
+                key={index}
+              >
+                {/* {cat.name.category} */}
+                {`${cat.name.category} (${cat.name.event_count})`}
+              </ListGroupItem>
+            );
+          })}
+      </ListGroup>
 
 
 
-      {cityFilter && (
-          <ListGroup className="list-group-item-success">
-            <ListGroupItem tag={Link} to="/" action={true} className="border-0">
-              All Cities
-            </ListGroupItem>
 
-            {locations &&
-              locations.map((loc, index) => {
-                return (
-                  // <ListGroupItem tag={Link} to={'/locations/'+loc.id} className='border-1 shadow-1 mt-1 custom-list-group-item' action={true} key={index}>
-                  <ListGroupItem
-                    tag={Link}
-                    to={"/locations/" + loc.name.location}
-                    className="border-1 shadow-1 mt-1 custom-list-group-item"
-                    action={true}
-                    key={index}
-                  >
-                    {`${loc.name.location} (${loc.name.event_count})`}
-                  </ListGroupItem>
-                );
-              })}
-          </ListGroup>
-      )}
-      
+      <ListGroup className="list-group-item-success">
+        <ListGroupItem tag={Link} to="/" action={true} className="border-0">
+          All Cities
+        </ListGroupItem>
+
+        {locations &&
+          locations.map((loc, index) => {
+            return (
+              // <ListGroupItem tag={Link} to={'/locations/'+loc.id} className='border-1 shadow-1 mt-1 custom-list-group-item' action={true} key={index}>
+              <ListGroupItem
+                tag={Link}
+                to={"/locations/" + loc.name.location}
+                className="border-1 shadow-1 mt-1 custom-list-group-item"
+                action={true}
+                key={index}
+              >
+                {`${loc.name.location} (${loc.name.event_count})`}
+              </ListGroupItem>
+            );
+          })}
+      </ListGroup>
+
 
 
     </div>

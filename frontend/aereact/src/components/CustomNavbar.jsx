@@ -74,7 +74,7 @@ const CustomNavbar = (args) => {
         fontFamily: 'Algerian', // Set the desired font family
         fontWeight: 'bold',   // Make the text bold
         fontSize: '32px',     // Adjust the font size as needed
-        color: '#ff6600',     // Set a custom text color
+        color: '#80A5FF',     // Set a custom text color
         // Add any additional styles you want here
     };
 
@@ -87,7 +87,7 @@ const CustomNavbar = (args) => {
                 fixed=''
                 className='px-4'
             >
-                <NavbarBrand tag={ReactLink} to='/' ><span style={logoStyles}>A7 blog</span></NavbarBrand>
+                <NavbarBrand tag={ReactLink} to='/' ><span style={logoStyles}>AE PHP</span></NavbarBrand>
                 <NavbarToggler onClick={toggle} />
                 <Collapse isOpen={isOpen} navbar>
                     {/* <Nav className="me-auto" navbar> */}
@@ -130,11 +130,11 @@ const CustomNavbar = (args) => {
                                     Socials
                                 </DropdownToggle>
                                 <DropdownMenu end>
-                                    <DropdownItem>LinkedIn</DropdownItem>
-                                    <DropdownItem>GitHub</DropdownItem>
-                                    <DropdownItem>Instagram</DropdownItem>
+                                    <DropdownItem href='https://www.linkedin.com/in/abhishek1141781/'>LinkedIn</DropdownItem>
+                                    <DropdownItem href='https://github.com/abhishek1141781/'>GitHub</DropdownItem>
+                                    <DropdownItem href='https://www.instagram.com/abhishek1141781/'>Instagram</DropdownItem>
                                     <DropdownItem divider />
-                                    <DropdownItem>Reset</DropdownItem>
+                                    <DropdownItem href='https://linktr.ee/abhishek1141781'>Linktree</DropdownItem>
                                 </DropdownMenu>
                             </UncontrolledDropdown>
                         </NavItem>

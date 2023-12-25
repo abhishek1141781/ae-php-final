@@ -1,11 +1,13 @@
 import { Button, Card, CardBody, CardHeader, Col, Container, Form, FormGroup, FormFeedback, Input, Label, Row } from "reactstrap";
-import Base from "../components/Base";
+import Base from "../src/components/Base";
 import backgroundImage from '../img/tetris-multicolored-pattern-4u7ed6koskqhcez1.jpg'
 import React, { useEffect, useState } from "react";
-import { fetchAuthUrlFromPHPBackend, fetchUserDataFromBackend, manualSignUp } from "../servicesArea/user_service";
+import { fetchAuthUrlFromPHPBackend, fetchUserDataFromBackend, manualSignUp } from "../src/servicesArea/user_service";
 import { toast } from "react-toastify";
 
 const Signup = () => {
+
+
     // store data entered in the form
     const [data, setData] = useState({
         name: '',
@@ -49,118 +51,47 @@ const Signup = () => {
 
 
 
-    const submitForm = (event) => {
-        event.preventDefault();
-    
-        console.log("data: ",data);
-    
-        if (data.name.trim() === '' || data.password.trim() === '' || data.email.trim() === '' ) {
-            toast.error("Recheck credentials: Incomplete")
-            return;
-        }
-
-
-        // Call server API for sending data
-        manualSignUp(data)
-            .then((resp) => {
-                console.log("JSON.parsed response.data.data.user_data from response in user_service: ", resp)
-                console.log("success log")
-    
-                toast.success("user is registered successfully !! User ID: " + resp.user_id);
-    
-                setData({
-                    name: '',
-                    email: '',
-                    password: ''
-                });
-    
-                window.location.href = 'http://localhost:3000/login';
-    
-            })
-            .catch((error) => {
-                console.log(error);
-                console.log("Error log");
-    
-                // Handle errors in a proper way based on the backend response
-    
-                if (error.response) {
-                    // The request was made and the server responded with a status code
-                    // that falls out of the range of 2xx
-
-                    if (error.response.status === 400) {
-                        // Bad request (user clicks register without entering all fields)
-                        toast.error("Form details invalid");
-                    } else if (error.response.status === 409) {
-                        // Conflict (duplicate email used for registration)
-                        toast.error("Email already exists. Choose a different email or login.");
-                        // toast.error();
-                    } else {
-                        // Unknown server database saving error
-                        toast.error("Error in saving user to the database");
-                    }
-                } else if (error.request) {
-                    // The request was made but no response was received
-                    toast.error("No response from the server");
-                } else {
-                    // Something happened in setting up the request that triggered an Error
-                    toast.error("Error: " + error.message);
-                }
-    
-                setError({
-                    errors: error,
-                    isError: true
-                });
-            });
-    }
-    
-
-
-
-
-
-
-
 
     //submitForm and call server api for sending data
-    // const submitForm = (event) => {
-    //     event.preventDefault();
+    const submitForm = (event) => {
+        event.preventDefault();
 
-    //     // if (error.isError) {
-    //     //     toast.error("Form details invalid")
-    //             setError({...error, isError: false });
+        // if (error.isError) {
+        //     toast.error("Form details invalid")
+                setError({...error, isError: false });
 
-    //     //     return;
-    //     // }
-    //     console.log(data);
+        //     return;
+        // }
+        console.log(data);
 
-    //     //data validate
+        //data validate
 
-    //     //call server api for sending data
-    //     manualSignUp(data).then((resp) => {
+        //call server api for sending data
+        manualSignUp(data).then((resp) => {
 
-    //         console.log("JSON.parsed response.data.data.user_data from response in user_service: ",resp)
-    //         console.log("success log")
-    //         // setError({...error,isError:false,errors:''})
-    //         // toast.success("user is registered successfully !! User email: " + resp.email);
-    //         toast.success("user is registered successfully !! User ID: " + resp.user_id);
-    //         // resetData();
-    //         setData({
-    //             name: '',
-    //             email: '',
-    //             password: ''
-    //         })
-    //         window.location.href = 'http://localhost:3000/login';
+            console.log("JSON.parsed response.data.data.user_data from response in user_service: ",resp)
+            console.log("success log")
+            // setError({...error,isError:false,errors:''})
+            // toast.success("user is registered successfully !! User email: " + resp.email);
+            toast.success("user is registered successfully !! User ID: " + resp.user_id);
+            // resetData();
+            setData({
+                name: '',
+                email: '',
+                password: ''
+            })
+            window.location.href = 'http://localhost:3000/login';
             
-    //     }).catch((error) => {
-    //         console.log(error)
-    //         console.log("Error log")
-    //         //handle errors in proper way of backend
-    //         setError({
-    //             errors: error,
-    //             isError: true
-    //         })
-    //     })
-    // }
+        }).catch((error) => {
+            console.log(error)
+            console.log("Error log")
+            //handle errors in proper way of backend
+            setError({
+                errors: error,
+                isError: true
+            })
+        })
+    }
 
 
 

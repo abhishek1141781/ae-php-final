@@ -44,13 +44,13 @@ const UserDashboard = () => {
   function deletePostUtility(post) {
     console.log("post from deletePost: ", post)
     //going to delete post
-    deletePostService(post.id).then(data => {
+    deletePostService(post.event_id).then(data => {
       console.log(data)
       toast.success("post deleted")
       // loadPostData()
-      let newPosts = posts.filter(p => p.id !== post.id)
+      // let newPosts = posts.filter(p => p.id !== post.id)
+      let newPosts = posts.filter(p => p.event_id !== post.event_id)
       setPosts([...newPosts])
-
     })
       .catch(error => {
         console.log(error)

@@ -12,7 +12,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import UserDashboard from "./pages/user_routes/UserDashboard";
 import ProfileInfo from "./pages/user_routes/ProfileInfo";
 // import UpdateBlog from "./pages/UpdateBlog";
-// import PostPage from "./pages/PostPage";
+import PostPage from "./pages/PostPage";
 // import UserProvider from "./context/UserProvider";
 import Filters from "./pages/Filters";
 
@@ -27,7 +27,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
-          {/* <Route path="/posts/:postId" element={<PostPage />} /> */}
+          <Route path="/posts/:postId" element={<PostPage />} />
           {/* Implement the below one */}
           {/* <Route path="/categories/:categoryId" element={<Categories />} /> */}
           <Route path="/categories/:categoryName" element={<Filters />} />

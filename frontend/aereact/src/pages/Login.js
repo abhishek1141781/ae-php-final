@@ -54,13 +54,7 @@ const Login = () => {
             // console.log("response.config.data from backend",respData)
 
 
-            // if (respData.dataFromBackend)
-            //     continue;
-            // else
-            //     exit;
-
-
-        // if (respData.dataFromBackend) {
+        if (respData.dataFromBackend) {
                 
                 //save data to localStorage
             doLogin(respData, () => {
@@ -79,7 +73,9 @@ const Login = () => {
                 // navigate(`/user/profile-info/${respData.user_id}`)
                 toast.success("login success")
             })
-
+        }else{
+            toast.error("Invalid credentials")
+        }
             }).catch(error => {
                 console.log(error)
                 if (error.response.status === 400 || error.response.status === 404)
@@ -114,10 +110,11 @@ const Login = () => {
     // When redirected back after Google OAuth, handle the response
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
-
+        
         // // Get all query parameters and create the final code string
         // const codeParams = Array.from(urlParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
         const code = urlParams.get('code');
+        code && toast.warning("logging user... | Please Wait...")
         // const code1 = urlParams.get('code');
         // const scope2 = urlParams.get('scopte');
         // const authuser3 = urlParams.get('authuser');

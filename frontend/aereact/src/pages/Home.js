@@ -1,6 +1,3 @@
-// post is not being used here in the <Home/> component
-// import Post from "../components/Post";
-import { useEffect } from "react";
 import Base from "../components/Base";
 import { Col, Container, Row } from "reactstrap";
 import NewFeed from "../components/NewFeed";
@@ -8,18 +5,26 @@ import CategorySideMenu from "../components/CategorySideMenu";
 
 const Home = () => {
 
-    console.log("Home RErender")
-    useEffect(() => {console.log("###########Home USE EFFECT@@@@@@@@@@@@@@@@@@@")},[])
-
     return (
         <Base>
-            <Container className="mt-2" >
+            <Container className="mt-4" >
 
-                <Row>
-                    <Col md={2} className="pt-5"><CategorySideMenu /></Col>
-                    <Col md={8}><NewFeed /></Col>
-                    <h1>This is the home</h1>
+                <Row className="justify-content-between border">
+                    <Col md={2} className="pt-2 border">
+                        {/* Render the date filter */}
+                        <CategorySideMenu dateFilter={true} categoryFilter={true} cityFilter={false}  />
+                        {/* <CategorySideMenu categoryFilter={true} /> */}
+                    </Col>
 
+                    <Col md={2} className="pt-4 border">
+                        {/* Render the date filter */}
+                        <CategorySideMenu cityFilter={true} dateFilter={false} categoryFilter={false} />
+                    </Col>
+
+                    <Col md={8}>
+                        {/* Render the main content */}
+                        <NewFeed />
+                    </Col>
                 </Row>
 
             </Container>

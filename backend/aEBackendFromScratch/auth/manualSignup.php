@@ -3,99 +3,84 @@
 // cors configurations
 include('../config/cors.php');
 
-// aquire database connection and select database => we get varible named $con from this include stmt
+// aquire database connection and select database => we get variable named $con from this include stmt
 include('../config/db_config_connection.php');
 
 // fetchUserData
 include('../utils/fetchUserData.php');
 
-
-
 // Check if the request method is OPTIONS and respond with 200 OK
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS' || $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
-}else{
-    http_response_code(405);
+    exit;
 }
 
 
-// parse/read/decode json data sent from the frontend 
-$data = json_decode(file_get_contents("php://input"));
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-// store decoded json data in respective variables after trimming them
-$name = isset($data->name) ? trim($data->name) : null;
-$email = isset($data->email) ? trim($data->email) : null;
-$password = isset($data->password) ? trim($data->password) : null;
+    // parse/read/decode json data sent from the frontend 
+    $data = json_decode(file_get_contents("php://input"));
 
+    // store decoded json data in respective variables after trimming them
+    $name = isset($data->name) ? trim($data->name) : null;
+    $email = isset($data->email) ? trim($data->email) : null;
+    $password = isset($data->password) ? trim($data->password) : null;
 
-// proceed to persist the data in the database
-if ($name && $email && $password) {
-    // Check if the user already exists with Google OAuth using prepared statement to avoid sql injection
-    $checkSql = "SELECT * FROM users WHERE email = ?";
-    $checkStmt = mysqli_prepare($con, $checkSql);
-    mysqli_stmt_bind_param($checkStmt, "s", $email);
-    mysqli_stmt_execute($checkStmt);
-    mysqli_stmt_store_result($checkStmt);
+    // proceed to persist the data in the database
+    if ($name && $email && $password) {
+        // Check if the user already exists with Google OAuth using prepared statement to avoid sql injection
+        $checkSql = "SELECT * FROM users WHERE email = ?";
+        $checkStmt = mysqli_prepare($con, $checkSql);
+        mysqli_stmt_bind_param($checkStmt, "s", $email);
+        mysqli_stmt_execute($checkStmt);
+        mysqli_stmt_store_result($checkStmt);
 
-    // User already exists, update the existing user with provided values
-    if (mysqli_stmt_num_rows($checkStmt) > 0) {
-        $updateSql = "UPDATE users SET 
-                        name = ?, 
-                        password = ?, 
-                        google_id = NULL 
-                      WHERE email = ?";
-        $updateStmt = mysqli_prepare($con, $updateSql);
-        mysqli_stmt_bind_param($updateStmt, "sss", $name, $password, $email);
-        $updateResult = mysqli_stmt_execute($updateStmt);
-
-        if ($updateResult) {
-
-            // Fetch the user data after insertion
-            $insertedUserData = fetchUserDataViaEmail($con, $email);
-            
+        // If User already exists, send conflict status
+        if (mysqli_stmt_num_rows($checkStmt) > 0) {
             $response['signupData'] = array(
-                'status' => 'valid',
-                'user_data' => $insertedUserData
+                'isError' => true,
+                'status' => 'invalid',
+                'message' => 'You have already signed up with this email. Login with the appropriate method, with which you initially signed up (Password/Oauth)'
             );
-            echo json_encode($response);
+            http_response_code(409);
         } else {
-            $response['signupData'] = array(
-                'status' => 'invalid'
-            );
-            echo json_encode($response);
-        }
-    } else {
-        // User does not exist, insert a new row
-        $sql = "INSERT INTO users (name, email, password, google_id)
+            // User does not exist, insert a new row
+            $sql = "INSERT INTO users (name, email, password, google_id)
                 VALUES (?, ?, ?, NULL)";
-        $stmt = mysqli_prepare($con, $sql);
-        mysqli_stmt_bind_param($stmt, "sss", $name, $email, $password);
-        $result = mysqli_stmt_execute($stmt);
+            $stmt = mysqli_prepare($con, $sql);
+            mysqli_stmt_bind_param($stmt, "sss", $name, $email, $password);
+            $result = mysqli_stmt_execute($stmt);
 
-        if ($result) {
+            if ($result) {
+                // Fetch the user data after insertion
+                $insertedUserData = fetchUserDataViaEmail($con, $email);
 
-            // Fetch the user data after insertion
-            $insertedUserData = fetchUserDataViaEmail($con, $email);
-            
-            $response['signupData'] = array(
-                'status' => 'valid',
-                'user_data' => $insertedUserData
-            );
-            echo json_encode($response);
-        } else {
-            $response['signupData'] = array(
-                'status' => 'invalid'
-            );
+                $response['signupData'] = array(
+                    'isError' => false,
+                    'status' => 'valid',
+                    'user_data' => $insertedUserData
+                );
+            } else {
+                $response['signupData'] = array(
+                    'isError' => true,
+                    'status' => 'invalid',
+                    'message' => 'Error in saving user to the database'
+                );
+                http_response_code(500);
+            }
+
             echo json_encode($response);
         }
+
+        mysqli_stmt_close($checkStmt);
+    } else {
+        $response['signupData'] = array(
+            'isError' => true,
+            'status' => 'invalid',
+            'message' => 'Enter all 3: name, email, and password'
+        );
+        http_response_code(400);
+        echo json_encode($response);
     }
-    
-    mysqli_stmt_close($checkStmt);
-    
-} else {
-    $response['signupData'] = array(
-        'status' => 'invalid: enter all 3: name, email and password'
-    );
-    echo json_encode($response);
 }
 ?>

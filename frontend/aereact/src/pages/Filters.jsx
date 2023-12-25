@@ -8,7 +8,7 @@ import { deletePostService, loadPostCategoryWise, loadPostLocationWise, loadPost
 import { toast } from 'react-toastify';
 import Post from '../components/Post';
 
-function Categories() {
+function Filters() {
 
     const [posts, setPosts] = useState([])
 
@@ -127,8 +127,22 @@ function Categories() {
         <Base>
             <Container className="mt-2" >{/* <NewFeed /> */}
                 <Row>
-                    <Col md={2} className="pt-5"><CategorySideMenu /></Col>
-                    <Col md={10}>
+                    {/* <Col md={2} className="pt-5"><CategorySideMenu  /></Col> */}
+
+                    <Col md={2} className="pt-2">
+                        {/* Render the date filter */}
+                        <CategorySideMenu dateFilter={true} categoryFilter={true} cityFilter={false}  />
+                        {/* <CategorySideMenu categoryFilter={true} /> */}
+                    </Col>
+
+                    <Col md={2} className="pt-2">
+                        {/* Render the date filter */}
+                        <CategorySideMenu cityFilter={true} dateFilter={false} categoryFilter={false} />
+                    </Col>
+
+
+
+                    <Col md={8}>
                         <h1>{selectedDate ? `Posts on ${selectedDate}` : `Filtered Posts (${posts.length})`}</h1>
                         {/* <h1>Events Count ({posts.length})</h1> */}
                         {
@@ -160,4 +174,4 @@ function Categories() {
     )
 }
 
-export default Categories
+export default Filters
