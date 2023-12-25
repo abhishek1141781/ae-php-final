@@ -9,14 +9,14 @@ const Home = () => {
         <Base>
             <Container className="mt-4" >
 
-                <Row className="justify-content-between border">
-                    <Col md={2} className="pt-2 border">
+                <Row className="justify-content-between">
+                    <Col md={2} className="pt-2">
                         {/* Render the date filter */}
                         <CategorySideMenu dateFilter={true} categoryFilter={true} cityFilter={false}  />
                         {/* <CategorySideMenu categoryFilter={true} /> */}
                     </Col>
 
-                    <Col md={2} className="pt-4 border">
+                    <Col md={2} className="pt-4">
                         {/* Render the date filter */}
                         <CategorySideMenu cityFilter={true} dateFilter={false} categoryFilter={false} />
                     </Col>

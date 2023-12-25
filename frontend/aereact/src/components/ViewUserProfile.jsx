@@ -29,7 +29,7 @@ const ViewUserProfile = ({ user }) => {
 
 
                 <Container className='text-center'>
-                    <img style={{ maxWidth: '250px' }} src={user?.user_data?.picture ? user?.user_data?.picture : getCurrentUserDetail()?.picture ? getCurrentUserDetail()?.picture : 'https://mcdn.wallpapersafari.com/medium/13/50/xeNjrU.jpg'} alt="profile-pic" className='img-fluid rounded-circle mt-3' />
+                    <img style={{ maxWidth: '250px' }} src={user?.user_data?.picture ? user?.user_data?.picture : getCurrentUserDetail()?.picture ? getCurrentUserDetail()?.picture : 'https://miro.medium.com/v2/resize:fit:1014/0*fbpKz1BwJUCBnqkQ'} alt="profile-pic" className='img-fluid rounded-circle mt-3' />
                 </Container>
 
                 <Table bordered hover responsive striped className='mt-5 text-center' >

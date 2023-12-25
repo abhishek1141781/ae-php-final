@@ -27,7 +27,7 @@ const AddPost = () => {
         banner_image_url: '',
     })
 
-    const [image,setImage] = useState(null)
+    const [image,setImage] = useState(undefined)
 
     useEffect(
         () => {
@@ -54,30 +54,45 @@ const AddPost = () => {
 
         event.preventDefault()
         console.log("created the post after preventing the def act after sub buttn pressed: ",post)
+
         if (post.event_name.trim() === '') {
             toast.error('Name: It must be something, right?!')
-            return;
-        }
-        if (post.location.trim() === '') {
-            toast.error('Location: Where is the event taking place? Hello?!!')
-            return;
-        }
-        if (post.category.trim() === '') {
-            toast.error('Category: Help us help you!')
             return;
         }
         if (post.description.trim() === '') {
             toast.error('Description: Tell me more about it!')
             return;
         }
+        if (post.banner_image_url === '') {
+            toast.error('No image')
+            return;
+        }
 
+        if (post.category?.trim() === '' || post.category === null) {
+            toast.error('Category: Help us help you!')
+            return;
+        }
+
+
+
+        if (post.start_time === '' || post.end_time === '' || post.start_time === null || post.end_time === null) {
+            toast.error('No Time, No Deal')
+            return;
+        }
         if (post.start_time > post.end_time) {
             toast.error('Do not mess with time, tomorrow always comes after')
             return;
         }
+        if (post.location?.trim() === '' || post.location === null) {
+            toast.error('Location: Where is the event taking place? Hello?!!')
+            return;
+        }
+
 
         //submit the form on server
         post['user_id'] = user.user_id
+
+        console.log("ready post: ",post)
 
         writePost(post).then(data => {
 
@@ -108,12 +123,37 @@ const AddPost = () => {
 
     //handling file change event
     const handleFileChange=(event)=>{
-        console.log(event.target.files[0])
-        setImage(event.target.files[0])
-        // setPost({
-        //     banner_image_url: image.name
-        // })
+
+        const selectedFile = event.target.files[0];
+
+        // Update the state using the updater function
+        setImage(() => {
+            console.log("New image: ", selectedFile);
+
+            // Update the post state
+            setPost({
+                ...post,
+                banner_image_url: selectedFile?.name,
+            });
+
+            console.log("post.banner_image_url: ", post.banner_image_url);
+            console.log("post: ", post);
+            
+            // Return the new state
+            return selectedFile;
+        });
+        console.log("OUTSIDE: post.banner_image_url: ", post.banner_image_url);
+        console.log("OUTSIDE: image: ", image);
+        
     }
+
+    //     setImage(event.target.files[0])
+    //     console.log("image: ",image)
+    //     setPost({
+    //         banner_image_url: image?.name
+    //     })
+    //     console.log("post.banner_image_url: ",post.banner_image_url)
+    //     console.log("post: ",post)
 
     return (
         <div className="wrapper">

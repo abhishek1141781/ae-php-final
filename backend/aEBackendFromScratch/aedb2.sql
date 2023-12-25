@@ -13,7 +13,7 @@ CREATE TABLE users (
     google_id VARCHAR(255)
 );
 
-/* Create the events table */
+/* Create the events table with ON DELETE CASCADE */
 CREATE TABLE events (
     event_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
@@ -24,5 +24,5 @@ CREATE TABLE events (
     description TEXT,
     category VARCHAR(50),
     banner_image_url VARCHAR(255),
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
