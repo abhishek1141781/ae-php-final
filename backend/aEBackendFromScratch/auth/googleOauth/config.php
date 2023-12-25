@@ -5,8 +5,8 @@ require_once '../../vendor/autoload.php';
 session_start();
 
 // init configuration
-$clientID = '727755570536-rp85pdutn7k05uh71jeg3mejo4v08h3g.apps.googleusercontent.com';
-$clientSecret = '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';
+$clientID = 'use_your_own';
+$clientSecret = 'use_your_own';
 // $redirectUri = 'http://localhost:8000/auth/googleOauth/welcome.php';
 $redirectUri = 'http://localhost:3000/login';
 
